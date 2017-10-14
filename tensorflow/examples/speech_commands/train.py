@@ -75,14 +75,17 @@ import os.path
 import sys
 
 import numpy as np
+from six.moves import xrange  # pylint: disable=redefined-builtin
 import tensorflow as tf
 
 import input_data
 import models
 from tensorflow.python.platform import gfile
+import datetime
 
 FLAGS = None
 
+print ("\n+++++HORARIO DO INICIO GERAL: " + str(datetime.datetime.now()) + "+++++\n")
 
 def main(_):
   # We want to see all the logging messages for this tutorial.
@@ -113,8 +116,8 @@ def main(_):
   # example --how_many_training_steps=10000,3000 --learning_rate=0.001,0.0001
   # will run 13,000 training loops in total, with a rate of 0.001 for the first
   # 10,000, and 0.0001 for the final 3,000.
-  training_steps_list = map(int, FLAGS.how_many_training_steps.split(','))
-  learning_rates_list = map(float, FLAGS.learning_rate.split(','))
+  training_steps_list = list(map(int, FLAGS.how_many_training_steps.split(',')))
+  learning_rates_list = list(map(float, FLAGS.learning_rate.split(',')))
   if len(training_steps_list) != len(learning_rates_list):
     raise Exception(
         '--how_many_training_steps and --learning_rate must be equal length '
@@ -189,7 +192,7 @@ def main(_):
       os.path.join(FLAGS.train_dir, FLAGS.model_architecture + '_labels.txt'),
       'w') as f:
     f.write('\n'.join(audio_processor.words_list))
-
+  print("\n+++++HORARIO DO INICIO DO TREINAMENTO: " + str(datetime.datetime.now()) + "+++++\n")
   # Training loop.
   training_steps_max = np.sum(training_steps_list)
   for training_step in xrange(start_step, training_steps_max + 1):
@@ -257,6 +260,9 @@ def main(_):
       tf.logging.info('Saving to "%s-%d"', checkpoint_path, training_step)
       saver.save(sess, checkpoint_path, global_step=training_step)
 
+  print("\n+++++HORARIO DO FIM DO TREINAMENTO: " + str(datetime.datetime.now()) + "+++++\n")
+
+  print ("+++++INICIO DO HORARIO DOS TESTES: " + str(datetime.datetime.now()) + "+++++\n")
   set_size = audio_processor.set_size('testing')
   tf.logging.info('set_size=%d', set_size)
   total_accuracy = 0
@@ -277,10 +283,11 @@ def main(_):
       total_conf_matrix = conf_matrix
     else:
       total_conf_matrix += conf_matrix
+  print ("+++++HORARIO DO FIM DOS TESTES: " + str(datetime.datetime.now()) + "+++++\n")
   tf.logging.info('Confusion Matrix:\n %s' % (total_conf_matrix))
   tf.logging.info('Final test accuracy = %.1f%% (N=%d)' % (total_accuracy * 100,
                                                            set_size))
-
+  print ("\n+++++HORARIO DO FIM GERAL: " + str(datetime.datetime.now()) + "+++++\n")
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
@@ -396,7 +403,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--wanted_words',
       type=str,
-      default='yes,no,up,down,left,right,on,off,stop,go',
+      default='one,two,three,four,five,six,seven,eight,nine',
       help='Words to use (others will be added to an unknown label)',)
   parser.add_argument(
       '--train_dir',
@@ -426,3 +433,4 @@ if __name__ == '__main__':
 
   FLAGS, unparsed = parser.parse_known_args()
   tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
+
