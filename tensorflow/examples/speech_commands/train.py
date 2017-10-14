@@ -403,7 +403,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--wanted_words',
       type=str,
-      default='one,two,three,four,five,six,seven,eight,nine',
+      default='zero,one,two,three,four,five,six,seven,eight,nine',
       help='Words to use (others will be added to an unknown label)',)
   parser.add_argument(
       '--train_dir',
