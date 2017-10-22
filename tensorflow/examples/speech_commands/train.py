@@ -82,11 +82,9 @@ import input_data
 import models
 from tensorflow.python.platform import gfile
 import datetime
-
 FLAGS = None
 
-print ("\n+++++HORARIO DO INICIO GERAL: " + str(datetime.datetime.now()) + "+++++\n")
-
+print ("\n##### HORARIO - INICIO GERAL: " + str(datetime.datetime.now()) + " #####\n")
 def main(_):
   # We want to see all the logging messages for this tutorial.
   tf.logging.set_verbosity(tf.logging.INFO)
@@ -192,7 +190,7 @@ def main(_):
       os.path.join(FLAGS.train_dir, FLAGS.model_architecture + '_labels.txt'),
       'w') as f:
     f.write('\n'.join(audio_processor.words_list))
-  print("\n+++++HORARIO DO INICIO DO TREINAMENTO: " + str(datetime.datetime.now()) + "+++++\n")
+  print("\n##### HORARIO INICIO - TREINAMENTO E VALIDACOES: " + str(datetime.datetime.now()) + " #####\n")
   # Training loop.
   training_steps_max = np.sum(training_steps_list)
   for training_step in xrange(start_step, training_steps_max + 1):
@@ -222,7 +220,7 @@ def main(_):
     train_writer.add_summary(train_summary, training_step)
     tf.logging.info('Step #%d: rate %f, accuracy %.1f%%, cross entropy %f' %
                     (training_step, learning_rate_value, train_accuracy * 100,
-                     cross_entropy_value))
+                     cross_entropy_value))    
     is_last_step = (training_step == training_steps_max)
     if (training_step % FLAGS.eval_step_interval) == 0 or is_last_step:
       set_size = audio_processor.set_size('validation')
@@ -255,14 +253,11 @@ def main(_):
     # Save the model checkpoint periodically.
     if (training_step % FLAGS.save_step_interval == 0 or
         training_step == training_steps_max):
-      checkpoint_path = os.path.join(FLAGS.train_dir,
-                                     FLAGS.model_architecture + '.ckpt')
+      checkpoint_path = os.path.join(FLAGS.train_dir,FLAGS.model_architecture + '.ckpt')
       tf.logging.info('Saving to "%s-%d"', checkpoint_path, training_step)
       saver.save(sess, checkpoint_path, global_step=training_step)
-
-  print("\n+++++HORARIO DO FIM DO TREINAMENTO: " + str(datetime.datetime.now()) + "+++++\n")
-
-  print ("+++++INICIO DO HORARIO DOS TESTES: " + str(datetime.datetime.now()) + "+++++\n")
+  print("\n##### HORARIO FIM - TREINAMENTO E VALIDACOES: " + str(datetime.datetime.now()) + " #####\n")
+  print ("##### HORARIO INICIO - TESTES: " + str(datetime.datetime.now()) + " #####\n")
   set_size = audio_processor.set_size('testing')
   tf.logging.info('set_size=%d', set_size)
   total_accuracy = 0
@@ -283,12 +278,11 @@ def main(_):
       total_conf_matrix = conf_matrix
     else:
       total_conf_matrix += conf_matrix
-  print ("+++++HORARIO DO FIM DOS TESTES: " + str(datetime.datetime.now()) + "+++++\n")
+  print (" ##### HORARIO FIM - TESTES: " + str(datetime.datetime.now()) + " #####\n")
   tf.logging.info('Confusion Matrix:\n %s' % (total_conf_matrix))
   tf.logging.info('Final test accuracy = %.1f%% (N=%d)' % (total_accuracy * 100,
                                                            set_size))
-  print ("\n+++++HORARIO DO FIM GERAL: " + str(datetime.datetime.now()) + "+++++\n")
-
+  print ("\n##### HORARIO - FIM GERAL: " + str(datetime.datetime.now()) + " #####\n")
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument(
